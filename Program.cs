@@ -1,4 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using movies_api.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +21,9 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultDatabase")));
 
 var app = builder.Build();
 
