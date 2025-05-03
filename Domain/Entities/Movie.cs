@@ -8,9 +8,10 @@ namespace movies_api.Domain.Entities
 		public string Title { get; set; }
 		public string Description { get; set; }
 		public string ImageUrl { get; set; }
-		public double Duration { get; set; }
-		public ushort Seasons { get; set; }
-		public ushort Episodes { get; set; }
+		public MovieType Type { get; set; } = MovieType.FILM;
+		public double? Duration { get; set; } = null;
+		public ushort? Seasons { get; set; } = null;
+		public ushort? Episodes { get; set; } = null;
 		public int ReleaseYear { get; set; }
 		public string[] Actors { get; set; }
 		public double Rating { get; set; }
@@ -24,9 +25,10 @@ namespace movies_api.Domain.Entities
 			string title,
 			string description,
 			string imageUrl,
-			double duration,
-			ushort seasons,
-			ushort episodes,
+			MovieType? type,
+			double? duration,
+			ushort? seasons,
+			ushort? episodes,
 			int releaseYear,
 			string[] actors,
 			double rating,
@@ -37,9 +39,10 @@ namespace movies_api.Domain.Entities
 			Title = title;
 			Description = description;
 			ImageUrl = imageUrl;
-			Duration = duration;
-			Seasons = seasons;
-			Episodes = episodes;
+			Type = type ?? Type;
+			Duration = duration ?? Duration;
+			Seasons = seasons ?? Seasons;
+			Episodes = episodes ?? Episodes;
 			ReleaseYear = releaseYear;
 			Actors = actors;
 			Rating = rating;
