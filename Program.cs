@@ -1,8 +1,20 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using movies_api.Infrastructure.Middlewares;
 using movies_api.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
+
+//CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Development", builder =>
+    {
+        builder.AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -32,6 +44,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("Development");
 
 app.UseAuthorization();
 app.MapControllers();
