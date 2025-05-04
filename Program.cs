@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using movies_api.Domain.Interfaces;
 using movies_api.Infrastructure.Middlewares;
 using movies_api.Infrastructure.Persistence;
+using movies_api.Infrastructure.Persistence.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,9 +18,11 @@ builder.Services.AddCors(options =>
     });
 });
 
+//GENERAL
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
+//DOCS
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo {
@@ -34,8 +38,12 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+//DATABASE
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultDatabase")));
+
+//INJECTIONS
+builder.Services.AddScoped<IMovieRepository, MovieRepository>();
 
 var app = builder.Build();
 
@@ -44,6 +52,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseCors("Development");
 

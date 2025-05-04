@@ -48,11 +48,8 @@ namespace movies_api.Infrastructure.Persistence.Repositories
 
 		public async Task<bool> RemoveMovie(int id)
 		{
-			Movie? foundMovie = await GetMovieById(id);
-
-			//Criar um Middleware para exceções
-			if (foundMovie is null)
-				throw new KeyNotFoundException($"Filme com ID {id} não encontrado.");
+			Movie? foundMovie = await GetMovieById(id)
+				?? throw new KeyNotFoundException($"Filme com ID {id} não encontrado.");
 			
 			_appDbContext.Remove(foundMovie);
 			int deleteResult = await _appDbContext.SaveChangesAsync();
