@@ -13,7 +13,6 @@ namespace movies_api.Domain.Entities
 		public ushort? Seasons { get; set; } = null;
 		public ushort? Episodes { get; set; } = null;
 		public int ReleaseYear { get; set; }
-		public string[] Actors { get; set; }
 		public double Rating { get; set; }
 		public double MovieRating { get; set; }
 		public List<MovieCategories> Categories { get; set; }
@@ -30,7 +29,6 @@ namespace movies_api.Domain.Entities
 			ushort? seasons,
 			ushort? episodes,
 			int releaseYear,
-			string[] actors,
 			double rating,
 			double movieRating,
 			List<MovieCategories> categories
@@ -44,7 +42,6 @@ namespace movies_api.Domain.Entities
 			Seasons = seasons ?? Seasons;
 			Episodes = episodes ?? Episodes;
 			ReleaseYear = releaseYear;
-			Actors = actors;
 			Rating = rating;
 			MovieRating = movieRating;
 			Categories = categories;
