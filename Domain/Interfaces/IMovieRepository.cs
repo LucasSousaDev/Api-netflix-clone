@@ -4,10 +4,11 @@ namespace movies_api.Domain.Interfaces
 {
     public interface IMovieRepository
 	{
-		Task<List<Movie>> GetAllMovies();
-		Task<List<Movie>> GetPaginatedMovies(int page, int pageSize);
-		Task<Movie?> GetMovieById(int id);
-		Task<Movie?> CreateMovie(Movie newMovie);
-		Task<bool> RemoveMovie(int id);
+		Task<List<Movie>> GetAllMoviesAsync();
+		Task<List<Movie>> GetPaginatedMoviesAsync(int page, int pageSize);
+		Task<Movie?> GetMovieByIdAsync(int id);
+		Task<Movie?> CreateMovieAsync(Movie newMovie);
+		Task<bool> SaveChangesAsync();
+		Task<bool> RemoveMovieAsync(Movie movie);
 	}
 }

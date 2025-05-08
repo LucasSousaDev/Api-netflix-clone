@@ -14,14 +14,14 @@ namespace movies_api.Infrastructure.Persistence.Repositories
 			_appDbContext = appDbContext;
 		}
 
-		public async Task<List<Movie>> GetAllMovies()
+		public async Task<List<Movie>> GetAllMoviesAsync()
 		{
 			return await _appDbContext.Movies
 				.AsNoTracking()
 				.ToListAsync();
 		}
 
-		public async Task<List<Movie>> GetPaginatedMovies(int page, int pageSize)
+		public async Task<List<Movie>> GetPaginatedMoviesAsync(int page, int pageSize)
 		{
 			return await _appDbContext.Movies
 				.AsNoTracking()
@@ -30,13 +30,13 @@ namespace movies_api.Infrastructure.Persistence.Repositories
 				.ToListAsync();
 		}
 
-		public async Task<Movie?> GetMovieById(int id)
+		public async Task<Movie?> GetMovieByIdAsync(int id)
 		{
 			return await _appDbContext.Movies
 				.FirstOrDefaultAsync(movie => movie.Id == id);
 		}
 
-		public async Task<Movie?> CreateMovie(Movie newMovie)
+		public async Task<Movie?> CreateMovieAsync(Movie newMovie)
 		{
 			EntityEntry<Movie> movieCreated = await _appDbContext.Movies.AddAsync(newMovie);
 			int createdResult = await _appDbContext.SaveChangesAsync();
@@ -46,12 +46,16 @@ namespace movies_api.Infrastructure.Persistence.Repositories
 				: null;
 		}
 
-		public async Task<bool> RemoveMovie(int id)
+		public async Task<bool> SaveChangesAsync()
 		{
-			Movie? foundMovie = await GetMovieById(id)
-				?? throw new KeyNotFoundException($"Filme com ID {id} não encontrado.");
+			int saveResult = await _appDbContext.SaveChangesAsync();
 			
-			_appDbContext.Remove(foundMovie);
+			return (saveResult > 0);
+		}
+
+		public async Task<bool> RemoveMovieAsync(Movie movie)
+		{
+			_appDbContext.Remove(movie);
 			int deleteResult = await _appDbContext.SaveChangesAsync();
 
 			return (deleteResult > 0);
