@@ -1,11 +1,10 @@
 using movies_api.Domain.Entities;
 using movies_api.Domain.Enums;
 
-namespace movies_api.API.Models.Views
+namespace movies_api.API.Models.Inputs
 {
-    public class MovieViewModel
+    public class MovieInputModel
     {
-        public int Id { get; set; }
 		public string Title { get; set; }
 		public string Description { get; set; }
 		public string ImageUrl { get; set; }
@@ -13,16 +12,15 @@ namespace movies_api.API.Models.Views
 		public double? Duration { get; set; } = null;
 		public ushort? Seasons { get; set; } = null;
 		public ushort? Episodes { get; set; } = null;
-		public string ReleaseYearFormatted { get; set; }
+		public int ReleaseYear { get; set; }
 		public double Rating { get; set; }
 		public double MovieRating { get; set; }
-		public IEnumerable<MovieCategories> Categories { get; set; }
+		public List<MovieCategories> Categories { get; set; }
 
-		public MovieViewModel() {}
+		public MovieInputModel() {}
 
-		public MovieViewModel(Movie movie)
+		public MovieInputModel(Movie movie)
 		{
-			Id = movie.Id;
 			Title = movie.Title;
 			Description = movie.Description;
 			ImageUrl = movie.ImageUrl;
@@ -30,10 +28,27 @@ namespace movies_api.API.Models.Views
 			Duration = movie.Duration;
 			Seasons = movie.Seasons;
 			Episodes = movie.Episodes;
-			ReleaseYearFormatted = movie.ReleaseYear.ToString();
+			ReleaseYear = movie.ReleaseYear;
 			Rating = movie.Rating;
 			MovieRating = movie.MovieRating;
 			Categories = movie.Categories;
+		}
+
+		public Movie ToEntity()
+		{
+			return new Movie {
+				Title = Title,
+				Description = Description,
+				ImageUrl = ImageUrl,
+				Type = Type,
+				Duration = Duration,
+				Seasons = Seasons,
+				Episodes = Episodes,
+				ReleaseYear = ReleaseYear,
+				Rating = Rating,
+				MovieRating = MovieRating,
+				Categories = Categories
+			};
 		}
     }
 }

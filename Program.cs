@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using movies_api.Application.Services;
 using movies_api.Domain.Interfaces;
 using movies_api.Infrastructure.Middlewares;
 using movies_api.Infrastructure.Persistence;
@@ -44,6 +45,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 //INJECTIONS
 builder.Services.AddScoped<IMovieRepository, MovieRepository>();
+builder.Services.AddScoped<IMovieService, MovieService>();
 
 var app = builder.Build();
 
@@ -53,12 +55,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseMiddleware<ExceptionMiddleware>();
-
 app.UseCors("Development");
 
-app.UseAuthorization();
-app.MapControllers();
 app.UseHttpsRedirection();
 
+app.UseMiddleware<ExceptionMiddleware>();
+
+app.UseAuthorization();
+
+app.MapControllers();
 app.Run();
