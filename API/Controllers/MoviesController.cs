@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using movies_api.API.Models.Inputs;
 using movies_api.API.Models.Views;
@@ -5,6 +6,7 @@ using movies_api.Domain.Interfaces;
 
 namespace movies_api.API.Controllers
 {
+	[Authorize]
 	[ApiController]
 	[Route("api/[controller]")]
 	public class MoviesController : ControllerBase
@@ -48,6 +50,13 @@ namespace movies_api.API.Controllers
 		{
 			MovieViewModel movie = await _movieService.CreateMovieAsync(newMovie);
 			return CreatedAtAction(nameof(GetMovieById), new { id = movie.Id }, movie);
+		}
+
+		[HttpPut]
+		public async Task<IActionResult> UpdateMovie([FromBody] MovieUpdateModel movieUpdate)
+		{
+			MovieViewModel movie = await _movieService.UpdateMovieAsync(movieUpdate);
+			return Ok(movie);
 		}
 
 		[HttpDelete("{id}")]

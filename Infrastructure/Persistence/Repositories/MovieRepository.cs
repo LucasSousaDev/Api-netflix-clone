@@ -39,26 +39,24 @@ namespace movies_api.Infrastructure.Persistence.Repositories
 		public async Task<Movie?> CreateMovieAsync(Movie newMovie)
 		{
 			EntityEntry<Movie> movieCreated = await _appDbContext.Movies.AddAsync(newMovie);
-			int createdResult = await _appDbContext.SaveChangesAsync();
 
-			return (createdResult > 0)
+			return (await CommitAsync())
 				? movieCreated.Entity
 				: null;
-		}
-
-		public async Task<bool> SaveChangesAsync()
-		{
-			int saveResult = await _appDbContext.SaveChangesAsync();
-			
-			return (saveResult > 0);
 		}
 
 		public async Task<bool> RemoveMovieAsync(Movie movie)
 		{
 			_appDbContext.Remove(movie);
-			int deleteResult = await _appDbContext.SaveChangesAsync();
 
-			return (deleteResult > 0);
+			return (await CommitAsync());
+		}
+
+		public async Task<bool> CommitAsync()
+		{
+			int saveResult = await _appDbContext.SaveChangesAsync();
+			
+			return (saveResult > 0);
 		}
 	}
 }

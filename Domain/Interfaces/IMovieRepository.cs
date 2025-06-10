@@ -8,7 +8,7 @@ namespace movies_api.Domain.Interfaces
 		Task<List<Movie>> GetPaginatedMoviesAsync(int page, int pageSize);
 		Task<Movie?> GetMovieByIdAsync(int id);
 		Task<Movie?> CreateMovieAsync(Movie newMovie);
-		Task<bool> SaveChangesAsync();
 		Task<bool> RemoveMovieAsync(Movie movie);
+		Task<bool> CommitAsync();
 	}
 }

@@ -54,7 +54,7 @@ namespace movies_api.Application.Services
 			
 			movie.ApplyToEntity(foundMovie);
 
-			return (await _movieRepository.SaveChangesAsync())
+			return (await _movieRepository.CommitAsync())
 				? new MovieViewModel(foundMovie)
 				: throw new Exception($"Não foi possível atualizar o filme {foundMovie.Title}.");
 		}
