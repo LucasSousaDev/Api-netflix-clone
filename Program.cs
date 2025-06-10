@@ -1,12 +1,20 @@
+using Accounts_api.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using movies_api.Application.Services;
+using movies_api.Domain.Entities;
 using movies_api.Domain.Interfaces;
 using movies_api.Infrastructure.Middlewares;
 using movies_api.Infrastructure.Persistence;
 using movies_api.Infrastructure.Persistence.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var jwtSettings = builder.Configuration.GetSection("jwt");
+var secretKey = jwtSettings.GetValue<string>("key");
+var issuer = jwtSettings.GetValue<string>("issuer");
+var audience = jwtSettings.GetValue<string>("audience");
 
 //CORS
 builder.Services.AddCors(options =>
@@ -18,6 +26,26 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod();
     });
 });
+
+//JWT Bearer
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer("Bearer", options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+
+            ValidIssuer = issuer,
+            ValidAudience = audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(secretKey)),
+			ClockSkew = TimeSpan.Zero
+        };
+    });
+
+builder.Services.AddAuthorization();
 
 //GENERAL
 builder.Services.AddControllers();
@@ -46,6 +74,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 //INJECTIONS
 builder.Services.AddScoped<IMovieRepository, MovieRepository>();
 builder.Services.AddScoped<IMovieService, MovieService>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 var app = builder.Build();
 
