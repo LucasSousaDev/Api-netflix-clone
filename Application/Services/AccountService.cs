@@ -34,7 +34,7 @@ namespace movies_api.Application.Services
 			Account? account = await _accountRepository.GetAccountByEmailAsync(email)
 				?? throw new KeyNotFoundException($"Conta com e-mail {email} não encontrado.");
 			
-			if (BCrypt.Net.BCrypt.Verify(accountLogin.Password, account.Password))
+			if (!BCrypt.Net.BCrypt.Verify(accountLogin.Password, account.Password))
 				throw new UnauthorizedAccessException("E-mail ou Senha inválido!");
 			
 			return GenerateToken(email);
@@ -42,6 +42,9 @@ namespace movies_api.Application.Services
 
 		public async Task<AccountViewModel> CreateAccountAsync(AccountInputModel accountInput)
 		{
+			if (await _accountRepository.AccountExistsAsync(accountInput.Email))
+				throw new InvalidOperationException($"Já existe uma conta com o e-mail '{accountInput.Email}'.");
+			
 			Account newAccount = accountInput.ToEntity();
 			newAccount.Password = BCrypt.Net.BCrypt.HashPassword(accountInput.Password);
 

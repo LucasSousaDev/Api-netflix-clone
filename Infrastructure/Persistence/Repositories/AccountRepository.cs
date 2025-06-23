@@ -27,6 +27,14 @@ namespace Accounts_api.Infrastructure.Persistence.Repositories
 				.FirstOrDefaultAsync(a => a.Email == email);
 		}
 
+		public async Task<bool> AccountExistsAsync(string email)
+		{
+			Account? account = await _appDbContext.Accounts
+				.FirstOrDefaultAsync(a => a.Email == email);
+			
+			return account != null;
+		}
+
 		public async Task<Account?> CreateAccountAsync(Account newAccount)
 		{
 			EntityEntry<Account> accountCreated = await _appDbContext.Accounts.AddAsync(newAccount);

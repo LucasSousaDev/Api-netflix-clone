@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using movies_api.API.Models.Inputs;
 using movies_api.API.Models.Views;
@@ -6,7 +7,7 @@ using movies_api.Domain.Interfaces;
 namespace movies_api.API.Controllers
 {
 	[ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class AccountController : ControllerBase
     {
 		private readonly IAccountService _accountService;
@@ -15,14 +16,15 @@ namespace movies_api.API.Controllers
 		{
 			_accountService = accountService;
 		}
-
+		
+		[Authorize]
 		[HttpGet("{id}")]
 		public async Task<IActionResult> GetAccountByIdAsync([FromRoute] int id)
 		{
 			AccountViewModel account = await _accountService.GetAccountByIdAsync(id);
 			return Ok(account);
 		}
-
+	
 		[HttpPost("login")]
 		public async Task<IActionResult> LoginAsync(AccountLoginModel accountLogin)
 		{
@@ -34,9 +36,10 @@ namespace movies_api.API.Controllers
 		public async Task<IActionResult> RegisterAccountAsync([FromBody] AccountInputModel accountInput)
 		{
 			AccountViewModel account = await _accountService.CreateAccountAsync(accountInput);
-			return CreatedAtAction(nameof(GetAccountByIdAsync), new { id = account.Id }, account);
+			return Created($"/Account/{account.Id}", account);
 		}
 
+		[Authorize]
 		[HttpPut]
 		public async Task<IActionResult> UpdateAccountAsync([FromBody] AccountUpdateModel accountUpdate)
 		{
@@ -44,6 +47,7 @@ namespace movies_api.API.Controllers
 			return Ok(account);
 		}
 
+		[Authorize]
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> RemoveAccountAsync([FromRoute] int id)
 		{
